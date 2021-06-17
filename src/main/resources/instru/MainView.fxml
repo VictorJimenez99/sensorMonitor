@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="container" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="674.0" prefWidth="1005.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="instru.MainViewController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="247.0" minHeight="10.0" prefHeight="247.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="162.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="294.0" minHeight="10.0" prefHeight="294.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+         <center>
+            <Label styleClass="titleText" text="Temperatura" BorderPane.alignment="CENTER" />
+         </center>
+         <bottom>
+            <Label fx:id="furnaceTempLabel" text="Temp: 0°C" BorderPane.alignment="CENTER" />
+         </bottom></BorderPane>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+         <center>
+            <Label styleClass="titleText" text="Distancia" BorderPane.alignment="CENTER" />
+         </center>
+         <bottom>
+            <Label fx:id="distanceLabel" text="Distancia: 0cm" BorderPane.alignment="CENTER" />
+         </bottom></BorderPane>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <center>
+            <Label styleClass="titleText" text="Ambiente" BorderPane.alignment="CENTER" />
+         </center>
+         <bottom>
+            <Label fx:id="ambientTempLabel" text="Temp: 0°C" BorderPane.alignment="CENTER" />
+         </bottom>
+      </BorderPane>
+      <LineChart fx:id="ambientTempChart" GridPane.rowIndex="1">
+        <xAxis>
+          <NumberAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <LineChart fx:id="furnaceTempChart" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <xAxis>
+          <NumberAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <LineChart fx:id="distanceChart" GridPane.columnIndex="2" GridPane.rowIndex="1">
+        <xAxis>
+          <NumberAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" />
+            <Pane prefHeight="294.0" prefWidth="100.0">
+               <children>
+                  <ProgressBar fx:id="ambientThermometer" layoutX="-47.0" layoutY="120.0" prefHeight="54.0" prefWidth="295.0" progress="0.0" rotate="270.0" />
+               </children>
+            </Pane>
+            <BorderPane prefHeight="298.0" prefWidth="100.0">
+               <top>
+                  <Label text="100°C" BorderPane.alignment="CENTER" />
+               </top>
+               <bottom>
+                  <Label text="0°C" BorderPane.alignment="CENTER" />
+               </bottom>
+               <center>
+                  <Label text="50°C" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+         </children>
+      </HBox>
+      <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+         <children>
+            <Group layoutX="202.0" layoutY="117.0" />
+            <Sphere layoutX="100.0" layoutY="147.0" radius="30.0" />
+            <Box fx:id="wall" depth="20.0" height="250.0" layoutX="251.0" layoutY="147.0" width="30.0" />
+         </children>
+      </Pane>
+   </children>
+</GridPane>

@@ -1,0 +1,14 @@
+.titleText {
+    -fx-text-fill: #46a8d9;
+    -fx-font-size: 3em;
+}
+
+.thermometer-cold {
+    -fx-accent: #c1ffff;
+}
+.thermometer-normal {
+    -fx-accent: #65ff65;
+}
+.thermometer-hot {
+    -fx-accent: #ffcf2d;
+}
