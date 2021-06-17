@@ -4,13 +4,13 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.shape.Box;
-import javafx.util.StringConverter;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -25,6 +25,7 @@ public class SerialPortListener implements SerialPortDataListener {
     private final LineChart<Number, Number> furnaceTempChart;
     private final Label distanceLabel;
     private final LineChart<Number, Number> distanceChart;
+    private final XYChart.Series<Number, Number> distanceSeries;
     private final Box wall;
     private StringBuilder completePayload;
     private final ProgressBar ambientThermometer;
@@ -61,13 +62,36 @@ public class SerialPortListener implements SerialPortDataListener {
         xAxisAmbient.setAutoRanging(false);
         xAxisAmbient.setLowerBound(new Date().getTime() + 1_500);
         xAxisAmbient.setUpperBound(new Date().getTime() + 10_000);
-        var labelFormat = new ClockTicker();
+        var labelFormat = new UnlabeledFormatter();
         xAxisAmbient.setTickLabelFormatter(labelFormat);
+
 
         var yAxisAmbient = (NumberAxis) ambientTempChart.getYAxis();
         yAxisAmbient.setLabel("Temperatura");
         yAxisAmbient.setAnimated(false);
         yAxisAmbient.setAutoRanging(false);
+
+
+        distanceSeries = new XYChart.Series<>();
+        distanceSeries.setName("distancia");
+        distanceChart.getData().add(distanceSeries);
+
+        var xAxisDistance = (NumberAxis) distanceChart.getXAxis();
+        xAxisDistance.setLabel("Muestra");
+        xAxisDistance.setAnimated(true);
+        xAxisDistance.setAutoRanging(false);
+        xAxisDistance.setLowerBound(new Date().getTime() + 1_500);
+        xAxisDistance.setUpperBound(new Date().getTime() + 10_000);
+        xAxisDistance.setTickLabelFormatter(labelFormat);
+
+        var yAxisDistance = (NumberAxis) distanceChart.getYAxis();
+        yAxisDistance.setLabel("Centímetros");
+        yAxisDistance.setAnimated(true);
+        yAxisDistance.setAutoRanging(false);
+
+        var distLine = distanceSeries
+                .getNode().lookup(".chart-series-line");
+        distLine.getStyleClass().add("distanceSeries");
     }
 
     @Override
@@ -124,6 +148,7 @@ public class SerialPortListener implements SerialPortDataListener {
         var ambientText = format.format(ambientTemp);
         var furnaceText = format.format(furnaceTemp);
         var distanceText = format.format(distance);
+        //Ambient
         Platform.runLater(()-> {
             ambientTempLabel.setText("Temp: " + ambientText+ "°C");
             furnaceTempLabel.setText("Temp: "+furnaceText +"°C");
@@ -155,11 +180,27 @@ public class SerialPortListener implements SerialPortDataListener {
             ambientThermometer.setProgress(thermometerValue);
 
             axis.setLabel(new SimpleDateFormat("HH mm ss").format(millis));
-
-
+        });
+        //Distance
+        Platform.runLater(()->{
             wall.setLayoutX(130+(distance*10));
+            var distanceList =
+                    distanceSeries.getData();
+            var millis = new Date().getTime();
+            var point = new XYChart.Data<Number, Number>(millis, distance);
+            distanceList.add(point);
+            // We can only change the color of the node, once the point is rendered
+            var node = point.getNode()
+                    .getStyleClass().add("distancePoint");
 
+            //System.out.println(line);
 
+            var axis = (NumberAxis)distanceChart.getXAxis();
+            if(distanceList.size() > 11) {
+                distanceList.remove(0);
+                axis.setLowerBound(millis-10_000);
+                axis.setUpperBound(millis-1000);
+            }
         });
     }
 

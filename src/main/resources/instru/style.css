@@ -12,3 +12,19 @@
 .thermometer-hot {
     -fx-accent: #ffcf2d;
 }
+
+/*
+.chart-series-line {
+    -fx-stroke-width: .1em;
+}
+
+.default-color0.chart-series-line{-fx-stroke: #29B6F6;}
+*/
+
+.distanceSeries {
+    -fx-stroke: #29a9f8;
+}
+
+.distancePoint {
+    -fx-background-color: #0c9ff5, #ffffff;
+}

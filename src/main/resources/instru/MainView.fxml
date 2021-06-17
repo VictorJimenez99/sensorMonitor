@@ -58,7 +58,7 @@
           <NumberAxis side="LEFT" />
         </yAxis>
       </LineChart>
-      <LineChart fx:id="distanceChart" GridPane.columnIndex="2" GridPane.rowIndex="1">
+      <LineChart fx:id="distanceChart" styleClass="chart-series-line" GridPane.columnIndex="2" GridPane.rowIndex="1">
         <xAxis>
           <NumberAxis side="BOTTOM" />
         </xAxis>

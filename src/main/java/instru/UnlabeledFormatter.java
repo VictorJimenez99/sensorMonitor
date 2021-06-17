@@ -4,7 +4,7 @@ import javafx.util.StringConverter;
 
 import java.text.SimpleDateFormat;
 
-public class ClockTicker extends StringConverter<Number> {
+public class UnlabeledFormatter extends StringConverter<Number> {
     static SimpleDateFormat dateFormat = new SimpleDateFormat("HH mm ss");
 
     @Override
