@@ -14,6 +14,7 @@ import javafx.scene.shape.Box;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class SerialPortListener implements SerialPortDataListener {
@@ -23,6 +24,7 @@ public class SerialPortListener implements SerialPortDataListener {
     private final XYChart.Series<Number, Number> ambientSeries;
     private final Label furnaceTempLabel;
     private final LineChart<Number, Number> furnaceTempChart;
+    private final XYChart.Series<Number,Number> furnaceSeries;
     private final Label distanceLabel;
     private final LineChart<Number, Number> distanceChart;
     private final XYChart.Series<Number, Number> distanceSeries;
@@ -31,6 +33,11 @@ public class SerialPortListener implements SerialPortDataListener {
     private final ProgressBar ambientThermometer;
 
     private static final DecimalFormat format = new DecimalFormat("##.##");
+    long counter = -1;
+
+    private static final SimpleDateFormat simpleDateFormat
+            = new SimpleDateFormat("hh:mm:ss");
+
 
     public SerialPortListener(SerialPort comPort,
                               Label ambientTempLabel,
@@ -57,11 +64,11 @@ public class SerialPortListener implements SerialPortDataListener {
 
         ambientTempChart.getData().add(ambientSeries);
         var xAxisAmbient = (NumberAxis) ambientTempChart.getXAxis();
-        xAxisAmbient.setLabel("Muestra");
+        xAxisAmbient.setLabel("");
         xAxisAmbient.setAnimated(true);
         xAxisAmbient.setAutoRanging(false);
-        xAxisAmbient.setLowerBound(new Date().getTime() + 1_500);
-        xAxisAmbient.setUpperBound(new Date().getTime() + 10_000);
+        xAxisAmbient.setLowerBound(0);
+        xAxisAmbient.setUpperBound(10);
         var labelFormat = new UnlabeledFormatter();
         xAxisAmbient.setTickLabelFormatter(labelFormat);
 
@@ -77,21 +84,43 @@ public class SerialPortListener implements SerialPortDataListener {
         distanceChart.getData().add(distanceSeries);
 
         var xAxisDistance = (NumberAxis) distanceChart.getXAxis();
-        xAxisDistance.setLabel("Muestra");
+        xAxisDistance.setLabel("");
         xAxisDistance.setAnimated(true);
         xAxisDistance.setAutoRanging(false);
-        xAxisDistance.setLowerBound(new Date().getTime() + 1_500);
-        xAxisDistance.setUpperBound(new Date().getTime() + 10_000);
+        xAxisDistance.setLowerBound(0);
+        xAxisDistance.setUpperBound(10);
         xAxisDistance.setTickLabelFormatter(labelFormat);
 
         var yAxisDistance = (NumberAxis) distanceChart.getYAxis();
         yAxisDistance.setLabel("Centímetros");
-        yAxisDistance.setAnimated(true);
+        yAxisDistance.setAnimated(false);
         yAxisDistance.setAutoRanging(false);
 
         var distLine = distanceSeries
                 .getNode().lookup(".chart-series-line");
         distLine.getStyleClass().add("distanceSeries");
+
+        furnaceSeries = new XYChart.Series<>();
+        furnaceSeries.setName("temperatura");
+
+        furnaceTempChart.getData().add(furnaceSeries);
+        var xAxisFurnace = (NumberAxis) furnaceTempChart.getXAxis();
+        xAxisFurnace.setLabel("");
+        xAxisFurnace.setAnimated(false);
+        xAxisFurnace.setAutoRanging(false);
+        xAxisFurnace.setLowerBound(0);
+        xAxisFurnace.setUpperBound(10);
+        xAxisFurnace.setTickLabelFormatter(labelFormat);
+
+
+        var yAxisFurnace = (NumberAxis) furnaceTempChart.getYAxis();
+        yAxisFurnace.setLabel("Temperatura");
+        yAxisFurnace.setAnimated(false);
+        yAxisFurnace.setAutoRanging(false);
+
+        var furnaceLine = furnaceSeries
+                .getNode().lookup(".chart-series-line");
+        furnaceLine.getStyleClass().add("furnaceSeries");
     }
 
     @Override
@@ -148,21 +177,25 @@ public class SerialPortListener implements SerialPortDataListener {
         var ambientText = format.format(ambientTemp);
         var furnaceText = format.format(furnaceTemp);
         var distanceText = format.format(distance);
-        //Ambient
-        Platform.runLater(()-> {
+        Platform.runLater(()->{
             ambientTempLabel.setText("Temp: " + ambientText+ "°C");
             furnaceTempLabel.setText("Temp: "+furnaceText +"°C");
             distanceLabel.setText(distanceText + "cm");
+        });
+        //Ambient
+        Platform.runLater(()-> {
 
             var ambientNodeList =
                     ambientSeries.getData();
             var millis = new Date().getTime();
-            ambientNodeList.add(new XYChart.Data<>(millis, ambientTemp));
+            ambientNodeList.add(new XYChart.Data<>(counter, ambientTemp));
             var axis = (NumberAxis)ambientTempChart.getXAxis();
             if(ambientNodeList.size() > 11) {
                 ambientNodeList.remove(0);
-                axis.setLowerBound(millis-10_000);
-                axis.setUpperBound(millis-1000);
+                //axis.setLowerBound(millis-10_000);
+                //axis.setUpperBound(millis-1000);
+                axis.setLowerBound(counter-10);
+                axis.setUpperBound(counter-1);
             }
             var size = ambientThermometer.getStyleClass().size();
             if(size > 2) {
@@ -178,8 +211,6 @@ public class SerialPortListener implements SerialPortDataListener {
 
             var thermometerValue = ambientTemp/100;
             ambientThermometer.setProgress(thermometerValue);
-
-            axis.setLabel(new SimpleDateFormat("HH mm ss").format(millis));
         });
         //Distance
         Platform.runLater(()->{
@@ -187,7 +218,7 @@ public class SerialPortListener implements SerialPortDataListener {
             var distanceList =
                     distanceSeries.getData();
             var millis = new Date().getTime();
-            var point = new XYChart.Data<Number, Number>(millis, distance);
+            var point = new XYChart.Data<Number, Number>(counter, distance);
             distanceList.add(point);
             // We can only change the color of the node, once the point is rendered
             var node = point.getNode()
@@ -198,10 +229,32 @@ public class SerialPortListener implements SerialPortDataListener {
             var axis = (NumberAxis)distanceChart.getXAxis();
             if(distanceList.size() > 11) {
                 distanceList.remove(0);
-                axis.setLowerBound(millis-10_000);
-                axis.setUpperBound(millis-1000);
+                //axis.setLowerBound(millis-10_000);
+                //axis.setUpperBound(millis-1000);
+                axis.setLowerBound(counter-10);
+                axis.setUpperBound(counter-1);
             }
         });
+
+        // Furnace
+        Platform.runLater(()-> {
+            var furnaceNodeList =
+                    furnaceSeries.getData();
+            var millis = new Date().getTime();
+            var point = new XYChart.Data<Number, Number>(counter, furnaceTemp);
+            furnaceNodeList.add(point);
+            var node = point.getNode()
+                    .getStyleClass().add("furnacePoint");
+            var axis = (NumberAxis)furnaceTempChart.getXAxis();
+            if(furnaceNodeList.size() > 11) {
+                furnaceNodeList.remove(0);
+                axis.setLowerBound(counter-10);
+                axis.setUpperBound(counter-1);
+            }
+            axis.setLabel(simpleDateFormat.format(millis));
+        });
+        counter++;
+
     }
 
 }

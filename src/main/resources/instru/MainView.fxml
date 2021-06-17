@@ -58,7 +58,7 @@
           <NumberAxis side="LEFT" />
         </yAxis>
       </LineChart>
-      <LineChart fx:id="distanceChart" styleClass="chart-series-line" GridPane.columnIndex="2" GridPane.rowIndex="1">
+      <LineChart fx:id="distanceChart" GridPane.columnIndex="2" GridPane.rowIndex="1">
         <xAxis>
           <NumberAxis side="BOTTOM" />
         </xAxis>
@@ -94,5 +94,6 @@
             <Box fx:id="wall" depth="20.0" height="250.0" layoutX="251.0" layoutY="147.0" width="30.0" />
          </children>
       </Pane>
+      <ProgressIndicator GridPane.columnIndex="1" GridPane.rowIndex="3" />
    </children>
 </GridPane>

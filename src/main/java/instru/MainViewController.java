@@ -52,6 +52,11 @@ public class MainViewController {
                         getClass().getResourceAsStream("wall.jpg")))
         );
 
+
+        ambientTempChart.setLegendVisible(false);
+        furnaceTempChart.setLegendVisible(false);
+        distanceChart.setLegendVisible(false);
+
         wall.setMaterial(material);
         comPort.openPort();
         comPort.addDataListener(

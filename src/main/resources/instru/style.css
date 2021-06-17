@@ -20,7 +20,13 @@
 
 .default-color0.chart-series-line{-fx-stroke: #29B6F6;}
 */
+.furnaceSeries {
+    -fx-stroke: #42f362;
+}
 
+.furnacePoint {
+    -fx-background-color: #296d29, #ffffff;
+}
 .distanceSeries {
     -fx-stroke: #29a9f8;
 }
