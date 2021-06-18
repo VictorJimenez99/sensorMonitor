@@ -10,9 +10,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WeatherImages {
 
+    enum CUR_IMG_ENUM{
+        COLD,
+        HOT,
+        NORMAL,
+        NONE,
+    }
+
     private final SequentialTransition sequenceCold;
     private final SequentialTransition sequenceNormal;
     private final SequentialTransition sequenceHot;
+    private CUR_IMG_ENUM cur_img;
 
     private final AtomicBoolean isLocked = new AtomicBoolean(false);
 
@@ -50,24 +58,29 @@ public class WeatherImages {
         sequenceHot = new SequentialTransition(
                 transitionLeave, transitionReturn);
         sequenceHot.setOnFinished(e->isLocked.set(false));
+
+        cur_img = CUR_IMG_ENUM.NONE;
     }
 
     public void displayColdImage() {
-        if(isLocked.get())
+        if(isLocked.get() || cur_img == CUR_IMG_ENUM.COLD)
             return;
         isLocked.set(true);
+        cur_img = CUR_IMG_ENUM.COLD;
         sequenceCold.play();
     }
     public void displayHotImage() {
-        if(isLocked.get())
+        if(isLocked.get() || cur_img == CUR_IMG_ENUM.HOT)
             return;
         isLocked.set(true);
+        cur_img = CUR_IMG_ENUM.HOT;
         sequenceHot.play();
     }
     public void displayNormalImage(){
-        if(isLocked.get())
+        if(isLocked.get() || cur_img == CUR_IMG_ENUM.NORMAL)
             return;
         isLocked.set(true);
+        cur_img = CUR_IMG_ENUM.NORMAL;
         sequenceNormal.play();
     }
 }

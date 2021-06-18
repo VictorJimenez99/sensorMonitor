@@ -68,12 +68,12 @@
           <NumberAxis side="LEFT" />
         </yAxis>
       </LineChart>
-      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" />
             <Pane prefHeight="294.0" prefWidth="100.0">
                <children>
-                  <ProgressBar fx:id="ambientThermometer" layoutX="-47.0" layoutY="120.0" prefHeight="54.0" prefWidth="295.0" progress="0.0" rotate="270.0" />
+                  <ProgressBar fx:id="furnaceThermometer" layoutX="-47.0" layoutY="120.0" prefHeight="54.0" prefWidth="295.0" progress="0.0" rotate="270.0" />
                </children>
             </Pane>
             <BorderPane prefHeight="298.0" prefWidth="100.0">
@@ -97,9 +97,9 @@
             <PerspectiveCamera fieldOfView="106.7" layoutX="57.0" layoutY="61.0" />
          </children>
       </Pane>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+      <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
          <center>
-            <ImageView fx:id="imageViwer" fitHeight="283.0" fitWidth="322.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+            <ImageView fx:id="imageViewer" fitHeight="283.0" fitWidth="322.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
    </children>

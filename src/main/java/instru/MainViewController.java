@@ -29,9 +29,9 @@ public class MainViewController {
     public LineChart<Number, Number> furnaceTempChart;
     public LineChart<Number, Number> distanceChart;
     public GridPane container;
-    public ProgressBar ambientThermometer;
+    public ProgressBar furnaceThermometer;
     public Box wall;
-    public ImageView imageViwer;
+    public ImageView imageViewer;
 
     @FXML
     public void initialize() {
@@ -80,9 +80,9 @@ public class MainViewController {
         weatherImages[2] = new Image(weatherImageStream);
 
         System.out.println(Arrays.toString(weatherImages));
-        imageViwer.setImage(weatherImages[2]);
-
-        var weatherViwer = new WeatherImages(imageViwer,
+        imageViewer.setImage(weatherImages[2]);
+        imageViewer.setImage(null);
+        var weatherViwer = new WeatherImages(imageViewer,
                 weatherImages[0], weatherImages[1], weatherImages[2]);
 
 
@@ -96,9 +96,9 @@ public class MainViewController {
                         comPort,
                         ambientTempLabel,
                         ambientTempChart,
-                        ambientThermometer,
                         furnaceTempLabel,
                         furnaceTempChart,
+                        furnaceThermometer,
                         distanceLabel,
                         distanceChart,
                         wall, weatherViwer));

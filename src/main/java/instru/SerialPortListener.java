@@ -4,7 +4,6 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -14,7 +13,6 @@ import javafx.scene.shape.Box;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class SerialPortListener implements SerialPortDataListener {
@@ -31,7 +29,7 @@ public class SerialPortListener implements SerialPortDataListener {
     private final Box wall;
     private final WeatherImages weatherViwer;
     private StringBuilder completePayload;
-    private final ProgressBar ambientThermometer;
+    private final ProgressBar furnaceThermometer;
 
     private static final DecimalFormat format = new DecimalFormat("##.##");
     long counter = -1;
@@ -43,9 +41,9 @@ public class SerialPortListener implements SerialPortDataListener {
     public SerialPortListener(SerialPort comPort,
                               Label ambientTempLabel,
                               LineChart<Number, Number> ambientTempChart,
-                              ProgressBar ambientThermometer,
                               Label furnaceTempLabel,
                               LineChart<Number, Number> furnaceTempChart,
+                              ProgressBar furnaceThermometer,
                               Label distanceLabel,
                               LineChart<Number, Number> distanceChart,
                               Box wall,
@@ -53,7 +51,7 @@ public class SerialPortListener implements SerialPortDataListener {
         this.comPort = comPort;
         this.ambientTempLabel = ambientTempLabel;
         this.ambientTempChart = ambientTempChart;
-        this.ambientThermometer = ambientThermometer;
+        this.furnaceThermometer = furnaceThermometer;
         this.furnaceTempLabel = furnaceTempLabel;
         this.furnaceTempChart = furnaceTempChart;
         this.distanceLabel = distanceLabel;
@@ -199,20 +197,6 @@ public class SerialPortListener implements SerialPortDataListener {
                 axis.setLowerBound(counter-10);
                 axis.setUpperBound(counter-1);
             }
-            var size = ambientThermometer.getStyleClass().size();
-            if(size > 2) {
-                ambientThermometer.getStyleClass().remove(1);
-            }
-            if(ambientTemp < 15) {
-                ambientThermometer.getStyleClass().add("thermometer-cold");
-            }else if(ambientTemp>15 && ambientTemp < 50) {
-                ambientThermometer.getStyleClass().add("thermometer-normal");
-            }else {
-                ambientThermometer.getStyleClass().add("thermometer-hot");
-            }
-
-            var thermometerValue = ambientTemp/100;
-            ambientThermometer.setProgress(thermometerValue);
 
             if(ambientTemp < 15) {
                 weatherViwer.displayColdImage();
@@ -242,6 +226,7 @@ public class SerialPortListener implements SerialPortDataListener {
                 axis.setLowerBound(counter-10);
                 axis.setUpperBound(counter-1);
             }
+
         });
 
         // Furnace
@@ -260,6 +245,20 @@ public class SerialPortListener implements SerialPortDataListener {
                 axis.setUpperBound(counter-1);
             }
             axis.setLabel(simpleDateFormat.format(millis));
+            var size = furnaceThermometer.getStyleClass().size();
+            if(size > 2) {
+                furnaceThermometer.getStyleClass().remove(1);
+            }
+            if(furnaceTemp < 15) {
+                furnaceThermometer.getStyleClass().add("thermometer-cold");
+            }else if(furnaceTemp>15 && furnaceTemp < 50) {
+                furnaceThermometer.getStyleClass().add("thermometer-normal");
+            }else {
+                furnaceThermometer.getStyleClass().add("thermometer-hot");
+            }
+
+            var thermometerValue = furnaceTemp/100;
+            furnaceThermometer.setProgress(thermometerValue);
         });
         counter++;
 
