@@ -13,6 +13,9 @@
     -fx-accent: #ffcf2d;
 }
 
+.test{
+    -fx-background-color: #a5654c;
+}
 /*
 .chart-series-line {
     -fx-stroke-width: .1em;

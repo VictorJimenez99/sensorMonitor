@@ -29,6 +29,7 @@ public class SerialPortListener implements SerialPortDataListener {
     private final LineChart<Number, Number> distanceChart;
     private final XYChart.Series<Number, Number> distanceSeries;
     private final Box wall;
+    private final WeatherImages weatherViwer;
     private StringBuilder completePayload;
     private final ProgressBar ambientThermometer;
 
@@ -47,7 +48,8 @@ public class SerialPortListener implements SerialPortDataListener {
                               LineChart<Number, Number> furnaceTempChart,
                               Label distanceLabel,
                               LineChart<Number, Number> distanceChart,
-                              Box wall) {
+                              Box wall,
+                              WeatherImages weatherImages) {
         this.comPort = comPort;
         this.ambientTempLabel = ambientTempLabel;
         this.ambientTempChart = ambientTempChart;
@@ -58,6 +60,7 @@ public class SerialPortListener implements SerialPortDataListener {
         this.distanceChart = distanceChart;
         this.wall = wall;
         this.completePayload = new StringBuilder();
+        this.weatherViwer = weatherImages;
 
         ambientSeries = new XYChart.Series<>();
         ambientSeries.setName("temperatura");
@@ -134,7 +137,9 @@ public class SerialPortListener implements SerialPortDataListener {
             return;
         var newData = new byte[comPort.bytesAvailable()];
         var numRead = comPort.readBytes(newData, newData.length);
-        //System.out.println("Read " + numRead + " bytes.");
+        if(numRead != newData.length) {
+            System.out.println("Error");
+        }
         var partial = new String(newData);
         completePayload.append(partial);
         //System.out.println("partial data transmission: " + partial);
@@ -187,13 +192,10 @@ public class SerialPortListener implements SerialPortDataListener {
 
             var ambientNodeList =
                     ambientSeries.getData();
-            var millis = new Date().getTime();
             ambientNodeList.add(new XYChart.Data<>(counter, ambientTemp));
             var axis = (NumberAxis)ambientTempChart.getXAxis();
             if(ambientNodeList.size() > 11) {
                 ambientNodeList.remove(0);
-                //axis.setLowerBound(millis-10_000);
-                //axis.setUpperBound(millis-1000);
                 axis.setLowerBound(counter-10);
                 axis.setUpperBound(counter-1);
             }
@@ -211,17 +213,25 @@ public class SerialPortListener implements SerialPortDataListener {
 
             var thermometerValue = ambientTemp/100;
             ambientThermometer.setProgress(thermometerValue);
+
+            if(ambientTemp < 15) {
+                weatherViwer.displayColdImage();
+            }else if(ambientTemp > 15 && ambientTemp < 30) {
+                weatherViwer.displayNormalImage();
+            }else {
+                weatherViwer.displayHotImage();
+            }
+
         });
         //Distance
         Platform.runLater(()->{
             wall.setLayoutX(130+(distance*10));
             var distanceList =
                     distanceSeries.getData();
-            var millis = new Date().getTime();
             var point = new XYChart.Data<Number, Number>(counter, distance);
             distanceList.add(point);
             // We can only change the color of the node, once the point is rendered
-            var node = point.getNode()
+            point.getNode()
                     .getStyleClass().add("distancePoint");
 
             //System.out.println(line);
@@ -229,8 +239,6 @@ public class SerialPortListener implements SerialPortDataListener {
             var axis = (NumberAxis)distanceChart.getXAxis();
             if(distanceList.size() > 11) {
                 distanceList.remove(0);
-                //axis.setLowerBound(millis-10_000);
-                //axis.setUpperBound(millis-1000);
                 axis.setLowerBound(counter-10);
                 axis.setUpperBound(counter-1);
             }
@@ -243,7 +251,7 @@ public class SerialPortListener implements SerialPortDataListener {
             var millis = new Date().getTime();
             var point = new XYChart.Data<Number, Number>(counter, furnaceTemp);
             furnaceNodeList.add(point);
-            var node = point.getNode()
+            point.getNode()
                     .getStyleClass().add("furnacePoint");
             var axis = (NumberAxis)furnaceTempChart.getXAxis();
             if(furnaceNodeList.size() > 11) {

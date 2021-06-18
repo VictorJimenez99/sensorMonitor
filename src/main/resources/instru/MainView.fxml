@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
 <GridPane fx:id="container" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="674.0" prefWidth="1005.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="instru.MainViewController">
@@ -92,8 +94,13 @@
             <Group layoutX="202.0" layoutY="117.0" />
             <Sphere layoutX="100.0" layoutY="147.0" radius="30.0" />
             <Box fx:id="wall" depth="20.0" height="250.0" layoutX="251.0" layoutY="147.0" width="30.0" />
+            <PerspectiveCamera fieldOfView="106.7" layoutX="57.0" layoutY="61.0" />
          </children>
       </Pane>
-      <ProgressIndicator GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <center>
+            <ImageView fx:id="imageViwer" fitHeight="283.0" fitWidth="322.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
    </children>
 </GridPane>

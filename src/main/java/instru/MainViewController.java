@@ -9,6 +9,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Material;
@@ -16,6 +17,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Sphere;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -29,6 +31,7 @@ public class MainViewController {
     public GridPane container;
     public ProgressBar ambientThermometer;
     public Box wall;
+    public ImageView imageViwer;
 
     @FXML
     public void initialize() {
@@ -46,18 +49,47 @@ public class MainViewController {
         // removes the connection once the program finishes
         App.setSerialPort(comPort);
 
+
+
         var material = new PhongMaterial();
-        material.setDiffuseMap(
-                new Image(Objects.requireNonNull(
-                        getClass().getResourceAsStream("wall.jpg")))
-        );
+        var imageTextureStream = getClass()
+                .getResourceAsStream("wall.jpg");
+        if (imageTextureStream == null) {
+            System.out.println("Couldn't load texture. setting a color instead");
+            material.setDiffuseColor(Color.DARKBLUE);
+        }else {
+            var texture = new Image(imageTextureStream);
+            material.setDiffuseMap(texture);
+            material.setDiffuseColor(Color.web("#a5654c"));
+        }
+
+        wall.setMaterial(material);
+
+
+
+        var weatherImages = new Image[3];
+        var weatherImageStream = getClass()
+                .getResourceAsStream("cold.png");
+        assert weatherImageStream != null;
+        weatherImages[0] = new Image(weatherImageStream);
+        weatherImageStream = getClass().getResourceAsStream("normal.png");
+        assert weatherImageStream != null;
+        weatherImages[1] = new Image(weatherImageStream);
+        weatherImageStream = getClass().getResourceAsStream("sunny.png");
+        assert weatherImageStream != null;
+        weatherImages[2] = new Image(weatherImageStream);
+
+        System.out.println(Arrays.toString(weatherImages));
+        imageViwer.setImage(weatherImages[2]);
+
+        var weatherViwer = new WeatherImages(imageViwer,
+                weatherImages[0], weatherImages[1], weatherImages[2]);
 
 
         ambientTempChart.setLegendVisible(false);
         furnaceTempChart.setLegendVisible(false);
         distanceChart.setLegendVisible(false);
 
-        wall.setMaterial(material);
         comPort.openPort();
         comPort.addDataListener(
                 new SerialPortListener(
@@ -69,7 +101,7 @@ public class MainViewController {
                         furnaceTempChart,
                         distanceLabel,
                         distanceChart,
-                        wall));
+                        wall, weatherViwer));
 
     }
 
